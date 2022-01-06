@@ -1,13 +1,12 @@
 <template>
-  <div>
-    ahihi
-  </div>
+  <span>
+    <slot>last name</slot>
+  </span>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "nuxt-property-decorator"
 
 @Component({})
-export default class index extends Vue {
-}
+export default class ScopeSlot extends Vue {}
 </script>

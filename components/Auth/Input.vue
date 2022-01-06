@@ -1,12 +1,14 @@
 <template>
   <div class="auth-input-container">
     <BInput
-      :class="['auth-input', { 'auth-input-showerror': error !== '' }]"
+      :class="['auth-input', { 'auth-input-showerror': error !== '', 'auth-input-focused': focused }]"
       :value="value"
       :type="htmlInputType"
       :placeholder="placeholder"
       :disabled="disabled"
       @input="(value) => $emit('input', value)"
+      @focus="focused = true"
+      @blur="focused = false"
     >
       <template v-if="$slots['prefix']" slot="prefix">
         <slot name="prefix" />
@@ -41,6 +43,7 @@ export default class AuthInput extends Vue {
   @Prop({ default: '' }) readonly error!: string
 
   show_password = false
+  focused = false;
 
   get htmlInputType() {
     if (this.show_password) return 'text'
@@ -59,6 +62,23 @@ export default class AuthInput extends Vue {
   width: 100%;
   border-bottom: 1px solid #eee;
 
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 1px;
+    background-color: #00af90;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: all 0.15s ease;
+  }
+
+  &-focused::after {
+    transform: scaleX(1);
+  }
+
   &-showerror {
     border-bottom: 1px solid #df384e;
 
@@ -67,32 +87,8 @@ export default class AuthInput extends Vue {
     }
   }
 
-  .b-input-prefix {
-    margin-right: 18px;
-    min-width: 70px;
-    font-size: 15px;
-  }
-
-  .b-input-suffix {
-    cursor: pointer;
-    font-size: 12px;
-    color: #ccc;
-  }
-
   &-container {
     position: relative;
-
-    .border {
-      position: absolute;
-      left: 0;
-      bottom: -1px;
-      width: 100%;
-      height: 1px;
-      background-color: #00af90;
-      transform: scaleX(0);
-      transform-origin: center;
-      transition: all 0.15s ease;
-    }
 
     input {
       flex: 1;
@@ -103,10 +99,6 @@ export default class AuthInput extends Vue {
 
       &:focus {
         outline: none;
-      }
-
-      &:focus ~ .border{
-        transform: scaleX(1);
       }
     }
   }

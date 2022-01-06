@@ -9,11 +9,13 @@
       :placeholder="placeholder"
       :disabled="disabled"
       @input="$emit('input', $event.target.value)"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
     />
     <div v-if="$slots['suffix']" class="b-input-suffix">
       <slot name="suffix" />
     </div>
-    <span class="border"></span>
+    <!-- <span class="border"></span> -->
   </div>
 </template>
 
@@ -33,6 +35,17 @@ export default class BInput extends Vue {
 .b-input {
   &:focus {
     outline: none;
+  }
+
+  &-prefix {
+    margin-right: 18px;
+    min-width: 70px;
+    font-size: 15px;
+  }
+
+  &-suffix {
+    font-size: 12px;
+    color: #ccc;
   }
 }
 </style>

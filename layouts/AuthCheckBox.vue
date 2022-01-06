@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <label class="main">
+    <label class="auth-checkbox">
         <input type="checkbox" @change="$emit('handleChecked')"/>
         <span class="checkmark"></span>
         <slot name="checkbox-text" />
     </label>
-    <span class="main-error">
+    <span class="auth-checkbox-error">
       <slot name="error" />
       <!-- ahihi -->
     </span>
@@ -20,7 +20,7 @@ export default class MyClass extends Vue {}
 </script>
 
 <style lang="less">
-.main {
+.auth-checkbox {
   cursor: pointer;
   display: block;
   position: relative;

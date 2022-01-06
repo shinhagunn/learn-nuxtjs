@@ -1,7 +1,7 @@
 <template>
   <Auth>
     <AuthForm v-if="!exist_email" title="Đặt lại mật khẩu đăng nhập" @submit.prevent="onSubmit" >
-      <AuthInput v-model="email" type="email" placeholder="Email" :error="e_email">
+      <AuthInput v-model="email" type="email" placeholder="Email" :error="email_error">
         <template slot="prefix">
           <span class="label">Email:</span>
         </template>
@@ -14,9 +14,9 @@
     </AuthForm>
 
     <AuthForm v-else title="Đặt lại mật khẩu đăng nhập" @submit.prevent="onSubmit" >
-      <AuthInput type="email" placeholder="Vui lòng nhập mã xác nhận E-mail" :error="e_email">
+      <AuthInput type="email" placeholder="Vui lòng nhập mã xác nhận E-mail">
         <template slot="suffix">
-          <AuthButton type="time">Nhận mã xác minh</AuthButton>
+          <BButton type="time" :set_timing="10" value="Nhận mã xác nhận" />
         </template>
       </AuthInput>
       <AuthButton type="submit">
@@ -31,25 +31,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "nuxt-property-decorator"
+import { Component, mixins as Mixins } from 'nuxt-property-decorator'
+import { AuthMixins } from '~/mixins/auth_mixins'
 
 @Component({})
-export default class Login extends Vue {
-  email = '';
-  e_email = '';
+export default class Login extends Mixins(AuthMixins) {
 
   exist_email = false;
 
   onSubmit() {
-    let kt = true
-    if (this.email === '') {
-      this.e_email = 'Vui lòng nhập E-mail cần đặt lại mật khẩu'
-      kt = false
-    } else {
-      this.e_email = ''
-    }
-
-    if(kt) {
+    this.fogotPassword()
+    if (!this.isError) {
       this.exist_email = true;
     }
   }

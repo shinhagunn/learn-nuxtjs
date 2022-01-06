@@ -1,19 +1,34 @@
 <template>
   <Auth>
     <AuthForm title="Chào mừng đăng ký MEXC" @submit.prevent="onSubmit">
-      <AuthInput v-model="email" type="email" placeholder="Email" :error="e_email">
+      <AuthInput
+        v-model="email"
+        type="email"
+        placeholder="Email"
+        :error="email_error"
+      >
         <template slot="prefix">
           <span class="label">Email:</span>
         </template>
       </AuthInput>
 
-      <AuthInput v-model="password" type="password" placeholder="Mật khẩu" :error="e_password">
+      <AuthInput
+        v-model="password"
+        type="password"
+        placeholder="Mật khẩu"
+        :error="password_error"
+      >
         <template slot="prefix">
           <span class="label">Mật khẩu:</span>
         </template>
       </AuthInput>
 
-      <AuthInput v-model="re_password" type="password" placeholder="Mật khẩu" :error="e_re_password">
+      <AuthInput
+        v-model="confirm_password"
+        type="password"
+        placeholder="Mật khẩu"
+        :error="confirm_password_error"
+      >
         <template slot="prefix">
           <span class="label">Xác nhận mật khẩu:</span>
         </template>
@@ -23,13 +38,13 @@
         v-model="verificationCode"
         type="text"
         placeholder="Mã xác minh"
-        :error="e_verificationCode"
+        :error="verificationCode_error"
       >
         <template slot="prefix">
           <span class="label">Mã xác minh:</span>
         </template>
         <template slot="suffix">
-          <AuthButton type="time">Nhận mã xác minh</AuthButton>
+          <BButton type="time" :set_timing="10" value="Nhận mã xác minh" />
         </template>
       </AuthInput>
 
@@ -43,13 +58,15 @@
         </template>
       </AuthInput>
 
-      <AuthCheckBox @handleChecked="checked = !checked"> 
+      <AuthCheckBox @handleChecked="checkbox = !checkbox">
         <template slot="checkbox-text">
           Tôi đã đọc và đồng ý với
-          <nuxt-link to="">Thỏa thuận người dùng và Chính sách bảo mật.</nuxt-link>
+          <nuxt-link to=""
+            >Thỏa thuận người dùng và Chính sách bảo mật.</nuxt-link
+          >
         </template>
         <template slot="error">
-          {{ e_checked }}
+          {{ checkbox_error }}
         </template>
       </AuthCheckBox>
 
@@ -58,70 +75,20 @@
       <AuthLinks :number="1">
         Tài khoản đã tồn tại.<nuxt-link to="/login">Đăng nhập ngay</nuxt-link>
       </AuthLinks>
-      
     </AuthForm>
   </Auth>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, mixins as Mixins } from 'nuxt-property-decorator'
+import { AuthMixins } from '~/mixins/auth_mixins'
 
 @Component({})
-export default class Register extends Vue {
-  email = ''
-  password = ''
-  re_password = ''
-  verificationCode = ''
-  introduceCode = ''
-  checked = false;
-
-  e_email = ''
-  e_password = ''
-  e_re_password = ''
-  e_verificationCode = ''
-  e_checked = ''
+export default class Register extends Mixins(AuthMixins) {
 
   onSubmit() {
-    let kt = true
-    if (this.email === '') {
-      this.e_email = 'Vui lòng nhập E-mail'
-      kt = false
-    } else {
-      this.e_email = ''
-    }
-
-    if (this.password === '') {
-      this.e_password = 'Vui lòng nhập mật khẩu'
-      kt = false
-    } else {
-      this.e_password = ''
-    }
-
-    if (this.re_password === '') {
-      this.e_re_password = 'Vui lòng nhập mật khẩu xác nhận'
-      kt = false
-    } else if (this.password !== this.re_password) {
-      this.e_re_password = 'Hai mật khẩu không giống nhau'
-      kt = false
-    } else {
-      this.e_re_password = ''
-    }
-
-    if (this.verificationCode === '') {
-      this.e_verificationCode = 'Vui lòng nhập mã xác minh'
-      kt = false
-    } else {
-      this.e_verificationCode = ''
-    }
-
-    if (!this.checked) {
-      this.e_checked = 'Vui lòng kiểm tra chính sách người dùng và thỏa thuận bảo mật'
-      kt = false
-    } else {
-      this.e_checked = ''
-    }
-
-    if (kt) {
+    this.register();
+    if (!this.isError) {
       this.$router.push('/login')
     }
   }
